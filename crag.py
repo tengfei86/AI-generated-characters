@@ -29,8 +29,8 @@ Get free credits [link](https://app.tavily.com/sign-in)
 
 import os
 
-os.environ["TAVILY_API_KEY"] = "tvly-..."
-os.environ["OPENAI_API_KEY"] = "sk-..."
+#os.environ["TAVILY_API_KEY"] = "tvly-..."
+#os.environ["OPENAI_API_KEY"] = "sk-..."
 
 """Corrective-RAG (CRAG) is a recent paper that talks about a cool way to make a self-reflective RAG.
 
