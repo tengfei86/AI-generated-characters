@@ -28,7 +28,8 @@ Get free credits [link](https://app.tavily.com/sign-in)
 """
 
 import os
-
+from dotenv import load_dotenv
+load_dotenv()
 #os.environ["TAVILY_API_KEY"] = "tvly-..."
 #os.environ["OPENAI_API_KEY"] = "sk-..."
 
@@ -74,7 +75,7 @@ import lancedb
 
 
 def lanceDBConnection(embed):
-    db = lancedb.connect("/tmp/lancedb")
+    db = lancedb.connect("./lancedb")
     table = db.create_table(
         "crag_demo",
         data=[{"vector": embed.embed_query("Hello World"), "text": "Hello World"}],
@@ -90,7 +91,6 @@ table = lanceDBConnection(embedder)
 vectorstore = LanceDB.from_documents(
     documents=doc_splits,
     embedding=embedder,
-    connection=table,
 )
 
 # ready with our retriever
@@ -162,8 +162,12 @@ def retrieve(state):
     state_dict = state["keys"]
     question = state_dict["question"]
     documents = retriever.get_relevant_documents(question)
-    return {"keys": {"documents": documents, "question": question}}
+    return {"keys": {"documents": documents[:1], "question": question}}
 
+"""
+https://python.langchain.com/v0.1/docs/integrations/chat/google_generative_ai/
+https://python.langchain.com/v0.1/docs/integrations/text_embedding/google_generative_ai/
+"""
 def generate(state):
     """
     Helper function for generating answers
@@ -183,7 +187,7 @@ def generate(state):
     prompt = hub.pull("rlm/rag-prompt")
 
     # LLM
-    llm = ChatOpenAI(model_name="gpt-4-0125-preview", temperature=0, streaming=True)
+    llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0, streaming=True)
 
     # Nested function for Post-processing retrieved docs
     def format_docs(docs):
